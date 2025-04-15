@@ -21,6 +21,8 @@ function Show(req, res) {
   // Get the movie with the given ID
   const sql = "SELECT * FROM movies WHERE id = ?";
 
+  const sqlReview = "SELECT * FROM reviews WHERE movie_id = ?";
+
   //  Execute the SQL query
   connection.query(sql, [id], (err, results) => {
     if (err) {
@@ -33,8 +35,20 @@ function Show(req, res) {
       return res.status(404).json({ error: "Movie not found" });
     }
 
-    // Return the movie details
-    res.json(results[0]);
+    const movie = results[0];
+
+    connection.query(sqlReview, [id], (err, reviews) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Database query failed" });
+      }
+
+      // Add the reviews to the movie object
+      movie.reviews = reviews;
+
+      // Return the movie details
+      res.json(movie);
+    });
   });
 }
 
