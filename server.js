@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-
 const PORT = process.env.PORT || 3000;
+const MovieRoutes = require("./routes/movies");
 
 //  Middleware
 
@@ -28,20 +28,16 @@ app.get("/", (req, res) => {
   res.send("Welcome in your movie server");
 });
 
-// Index route for movies
-app.get("/api/v1/movies", (req, res) => {
-  res.json({ message: `This is the index route for movies` });
-});
+//  Use the movie routes
+app.use("/api/v1/movies", MovieRoutes);
 
-// Show route for movies
-app.get("/api/v1/movies/:id", (req, res) => {
-  const { id } = req.params;
-  res.json({
-    message: `This is the show route for movie with ID: ${req.params.id}`,
-  });
+//  Middleware for 500 error
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
 });
 
 // Middleware for 404 error
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).send("Sorry can't find that!");
 });
