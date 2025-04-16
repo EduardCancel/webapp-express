@@ -52,7 +52,29 @@ function Show(req, res) {
   });
 }
 
+function storeReview(req, res) {
+  const id = Number(req.params.id);
+
+  const { name, text, vote } = req.body;
+
+  const sql =
+    "INSERT INTO reviews (name, text, vote, movie_id) VALUES (?, ?, ?, ?)";
+
+  connection.query(sql, [name, text, vote, id], (err, results) => {
+    if (err) {
+      console.error("SQL Error:", err);
+      return res.status(500).json({ error: "Failed to store the review" });
+    }
+
+    res.status(201).json({
+      message: "Review stored successfully",
+      reviewId: results.insertId,
+    });
+  });
+}
+
 module.exports = {
   Index,
   Show,
+  storeReview,
 };
