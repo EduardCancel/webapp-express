@@ -29,6 +29,21 @@ app.get("/", (req, res) => {
 //  Use the movie routes
 app.use("/api/v1/movies", MovieRoutes);
 
+// Authentication middleware
+app.post(`/register`, (req, res) => {
+  const data = req.body;
+  console.log(data);
+
+  res.json(data);
+});
+
+app.post(`login`, (req, res) => {
+  const data = req.body;
+  console.log(data);
+
+  res.json(data);
+});
+
 //  Middleware for 500 error
 app.use(serverError);
 
